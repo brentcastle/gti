@@ -61,7 +61,11 @@ void open_term();
 void move_to_top(void);
 void line_at(int start_x, const char *s);
 void draw_car(int x);
+void draw_cow(int x);
+void clear_cow(int x);
 void clear_car(int x);
+void merge(void);
+void other(void);
 
 int TERM_WIDTH;
 FILE *TERM_FH;
@@ -69,7 +73,6 @@ int SLEEP_DELAY;
 
 int main(int argc, char **argv)
 {
-    int i;
     char *git_path;
     (void) argc;
 
@@ -78,12 +81,15 @@ int main(int argc, char **argv)
     SLEEP_DELAY = 1000000 / (TERM_WIDTH + GTI_SPEED);
 
     init_space();
-    for (i = -20; i < TERM_WIDTH; i++) {
-        draw_car(i);
-        usleep(SLEEP_DELAY);
-        clear_car(i);
+
+    if(argc > 1){
+    if(strcmp(argv[1],"merge")==0){
+	merge();
+    } else {
+	other();
     }
-    move_to_top();
+    }
+
     fflush(TERM_FH);
     git_path = getenv("GIT");
     if (git_path) {
@@ -94,6 +100,28 @@ int main(int argc, char **argv)
     /* error in exec if we land here */
     perror(GIT_NAME);
     return 1;
+}
+
+void other(void){
+    int i;
+    for (i = -20; i < TERM_WIDTH; i++) {
+        draw_car(i);
+        usleep(SLEEP_DELAY);
+	clear_car(i);
+    }
+    move_to_top();
+}
+
+void merge(void){
+    int i;
+    for (i = -20; i < TERM_WIDTH; i++) {
+        draw_car(i);
+        draw_cow(TERM_WIDTH-38);
+        usleep(SLEEP_DELAY);
+	clear_car(i);
+    }
+    clear_cow(TERM_WIDTH-38);
+    draw_merged(TERM_WIDTH-58);
 }
 
 void init_space(void)
@@ -207,6 +235,41 @@ void draw_car(int x)
     line_at(x, " `   X   --------------   X   '");
     line_at(x, "   ':-:'                ':-:'  ");
     }
+}
+
+void draw_cow(int x)
+{
+    move_to_top();
+    line_at(x,"");
+    line_at(x,"  ^__^");
+    line_at(x,"  (oo)\_______");
+    line_at(x,"  (__)\       )\/\ ");
+    line_at(x,"     ||----w |");
+    line_at(x,"     ||     ||");
+    line_at(x,"     ||     ||");
+}
+
+void draw_merged(int x){
+    move_to_top();
+    line_at(x,"");
+    line_at(x,"  ^__^");
+    line_at(x,"  (oo)\____________________");
+    line_at(x,"  (__)\     merged!        )\/\ ");
+    line_at(x, "   .-:-.                .-:-.  ");
+    line_at(x, "    -+-  -----------w--  -+-  ");
+    line_at(x, "   '-:-'                '-:-'  ");
+}
+
+void clear_cow(int x)
+{
+    move_to_top();
+    line_at(x, "                  ");
+    line_at(x, "                  ");
+    line_at(x, "                  ");
+    line_at(x, "                  ");
+    line_at(x, "                  ");
+    line_at(x, "                  ");
+    line_at(x, "                  ");
 }
 
 void clear_car(int x)
