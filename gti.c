@@ -56,16 +56,17 @@
 #endif
 
 int  term_width(void);
+void other(void);
+void merge(void);
 void init_space(void);
 void open_term();
 void move_to_top(void);
 void line_at(int start_x, const char *s);
 void draw_car(int x);
 void draw_cow(int x);
-void clear_cow(int x);
+void draw_merged(int x);
 void clear_car(int x);
-void merge(void);
-void other(void);
+void clear_cow(int x);
 
 int TERM_WIDTH;
 FILE *TERM_FH;
@@ -260,6 +261,18 @@ void draw_merged(int x){
     line_at(x, "   '-:-'                '-:-'  ");
 }
 
+void clear_car(int x)
+{
+    move_to_top();
+    line_at(x, "  ");
+    line_at(x, "  ");
+    line_at(x, "  ");
+    line_at(x, "  ");
+    line_at(x, "  ");
+    line_at(x, "  ");
+    line_at(x, "  ");
+}
+
 void clear_cow(int x)
 {
     move_to_top();
@@ -272,15 +285,4 @@ void clear_cow(int x)
     line_at(x, "                  ");
 }
 
-void clear_car(int x)
-{
-    move_to_top();
-    line_at(x, "  ");
-    line_at(x, "  ");
-    line_at(x, "  ");
-    line_at(x, "  ");
-    line_at(x, "  ");
-    line_at(x, "  ");
-    line_at(x, "  ");
-}
 
